@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Libro Loop - Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap");
+
+    body {
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.3s ease-in-out;
+      background-color: #f3f4f6;
+    }
+
+    .card {
+      background-color: white;
+    }
+
+    .input-field {
+      border-color: #d1d5db;
+      background-color: white;
+      color: #1f2937;
+    }
+
+    .label {
+      color: #374151;
+    }
+
+    .text-main {
+      color: #1f2937;
+    }
+
+    /* dark mode */
+    .dark body {
+      background-color: #111827;
+    }
+
+    .dark .card {
+      background-color: #1f2937;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+        0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark .input-field {
+      border-color: #4b5563;
+      background-color: #374151;
+      color: white;
+    }
+
+    .dark .label {
+      color: #d1d5db;
+    }
+
+    .dark .text-main {
+      color: white;
+    }
+
+    .tab-button {
+      transition: all 0.25s;
+    }
+
+    .tab-content {
+      transition: opacity 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="dark:bg-gray-900">
+  <!-- NAVBAR -->
+  <nav class="card shadow-lg w-full sticky top-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <!-- Left -->
+        <div class="flex items-center gap-3">
+          <div
+            class="flex items-center justify-center w-9 h-9 rounded-full bg-indigo-600 text-white"
+          >
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div class="flex flex-col">
+            <span
+              class="text-main font-bold text-xl sm:text-2xl tracking-tight"
+              >LIBRO LOOP</span
+            >
+            <span
+              class="text-[11px] uppercase tracking-widest text-gray-500 dark:text-gray-300"
+              >Admin Dashboard</span
+            >
+          </div>
+        </div>
+
+        <!-- Right -->
+        <div class="flex items-center space-x-4">
+          <span class="hidden sm:inline text-xs text-gray-500 dark:text-gray-300"
+            >Logged in as: <span class="font-semibold">admin@libroloop.com</span></span
+          >
+
+          <!-- Theme toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          >
+            <svg
+              id="sun-icon"
+              class="w-5 h-5 text-yellow-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <svg
+              id="moon-icon"
+              class="w-5 h-5 text-gray-900 hidden dark:text-gray-100"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Clear Data -->
+          <button
+            id="reset-demo"
+            class="py-2 px-4 rounded-lg text-xs sm:text-sm font-semibold text-white bg-red-600 hover:bg-red-700"
+          >
+            Clear Local Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- HEADER -->
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6"
+    >
+      <div>
+        <h1 class="text-3xl font-bold text-main">
+          Welcome, <span class="text-indigo-600 dark:text-indigo-400">Admin</span>
+        </h1>
+        <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">
+          Manage users (Student, General User, Wholesaler), approve book listings,
+          monitor rentals, coupons, and platform analytics.
+        </p>
+      </div>
+
+      <div
+        class="card rounded-xl px-4 py-3 shadow-md text-xs text-gray-600 dark:text-gray-200"
+      >
+        <p class="font-semibold text-[11px] mb-1 uppercase">Quick Summary</p>
+        <div class="flex gap-4 text-[11px]">
+          <div>
+            <span class="block text-gray-400 dark:text-gray-400">Users</span>
+            <span id="summary-users" class="font-semibold">0</span>
+          </div>
+          <div>
+            <span class="block text-gray-400 dark:text-gray-400">Listings</span>
+            <span id="summary-listings" class="font-semibold">0</span>
+          </div>
+          <div>
+            <span class="block text-gray-400 dark:text-gray-400">Rentals</span>
+            <span id="summary-rentals" class="font-semibold">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="mb-5 border-b border-gray-200 dark:border-gray-700">
+      <nav class="-mb-px flex flex-wrap gap-2 sm:space-x-6" aria-label="Tabs">
+        <button
+          data-tab="users"
+          class="tab-button active whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-indigo-600 border-indigo-500"
+        >
+          <i class="fa-solid fa-users-gear mr-1.5"></i> Users
+        </button>
+        <button
+          data-tab="listings"
+          class="tab-button whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500"
+        >
+          <i class="fa-solid fa-book-open mr-1.5"></i> Book Approvals
+        </button>
+        <button
+          data-tab="rentals"
+          class="tab-button whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500"
+        >
+          <i class="fa-solid fa-hand-holding-dollar mr-1.5"></i> Rentals & Deposits
+        </button>
+        <button
+          data-tab="coupons"
+          class="tab-button whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500"
+        >
+          <i class="fa-solid fa-ticket-simple mr-1.5"></i> Coupons
+        </button>
+        <button
+          data-tab="analytics"
+          class="tab-button whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500"
+        >
+          <i class="fa-solid fa-chart-column mr-1.5"></i> Analytics
+        </button>
+        <button
+          data-tab="disputes"
+          class="tab-button whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-500"
+        >
+          <i class="fa-solid fa-scale-balanced mr-1.5"></i> Disputes
+        </button>
+      </nav>
+    </div>
+
+    <!-- TAB CONTENTS -->
+    <div class="space-y-6">
+      <!-- USERS TAB -->
+      <section id="users-tab" class="tab-content">
+        <div class="card rounded-xl shadow-md p-5">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-users-gear text-indigo-500"></i>
+                User Management
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                View, approve or block Student, General User, and Wholesaler
+                accounts.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <select
+                id="user-role-filter"
+                class="input-field rounded-md text-xs px-2 py-2"
+              >
+                <option value="">All Roles</option>
+                <option value="Student">Student</option>
+                <option value="General">General User</option>
+                <option value="Wholesaler">Wholesaler</option>
+              </select>
+              <select
+                id="user-status-filter"
+                class="input-field rounded-md text-xs px-2 py-2"
+              >
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs">
+              <thead
+                class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+              >
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Name</th>
+                  <th class="px-3 py-2 text-left font-semibold">Email</th>
+                  <th class="px-3 py-2 text-left font-semibold">Role</th>
+                  <th class="px-3 py-2 text-left font-semibold">Status</th>
+                  <th class="px-3 py-2 text-center font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                <!-- Filled by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            id="users-empty"
+            class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden"
+          >
+            No users found. (In full project this will come from backend.)
+          </p>
+        </div>
+      </section>
+
+      <!-- LISTINGS TAB -->
+      <section id="listings-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md p-5">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-book-open text-indigo-500"></i>
+                Book Listing Approval
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Review and approve/reject books listed for sell, rent, exchange or
+                donation.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="listings-container"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            <!-- Filled by JS -->
+          </div>
+
+          <p
+            id="listings-empty"
+            class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden"
+          >
+            No pending listings to approve.
+          </p>
+        </div>
+      </section>
+
+      <!-- RENTALS TAB -->
+      <section id="rentals-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md p-5">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i>
+                Rental & Deposit Oversight
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Track rentals, deposits, due dates, and late fees across students,
+                general users and wholesalers.
+              </p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs">
+              <thead
+                class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+              >
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Book</th>
+                  <th class="px-3 py-2 text-left font-semibold">User Email</th>
+                  <th class="px-3 py-2 text-left font-semibold">Deposit</th>
+                  <th class="px-3 py-2 text-left font-semibold">Due Date</th>
+                  <th class="px-3 py-2 text-left font-semibold">Late Fee</th>
+                  <th class="px-3 py-2 text-left font-semibold">Status</th>
+                  <th class="px-3 py-2 text-center font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody
+                id="rentals-tbody"
+                class="divide-y divide-gray-200 dark:divide-gray-700"
+              ></tbody>
+            </table>
+          </div>
+
+          <p
+            id="rentals-empty"
+            class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden"
+          >
+            No rental data available.
+          </p>
+        </div>
+      </section>
+
+      <!-- COUPONS TAB -->
+      <section id="coupons-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md p-5 space-y-4">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-ticket-simple text-amber-500"></i>
+                Coupon & Discount Management
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Issue, manage or revoke <span class="font-semibold">student-only</span>
+                coupons. General users and wholesalers cannot use these codes.
+              </p>
+            </div>
+          </div>
+
+          <!-- Add coupon form -->
+          <form
+            id="coupon-form"
+            class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs"
+          >
+            <div>
+              <label class="label text-[11px]">Coupon Code</label>
+              <input
+                id="coupon-code"
+                type="text"
+                required
+                placeholder="STU50"
+                class="input-field rounded-md w-full px-2 py-2 mt-1"
+              />
+            </div>
+            <div>
+              <label class="label text-[11px]">Discount (%)</label>
+              <input
+                id="coupon-discount"
+                type="number"
+                min="1"
+                max="90"
+                required
+                placeholder="10"
+                class="input-field rounded-md w-full px-2 py-2 mt-1"
+              />
+            </div>
+            <div>
+              <label class="label text-[11px]">Max Uses</label>
+              <input
+                id="coupon-max-uses"
+                type="number"
+                min="1"
+                required
+                placeholder="50"
+                class="input-field rounded-md w-full px-2 py-2 mt-1"
+              />
+            </div>
+            <div class="flex items-end">
+              <button
+                type="submit"
+                class="w-full px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
+              >
+                Add Coupon
+              </button>
+            </div>
+          </form>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs">
+              <thead
+                class="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+              >
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Code</th>
+                  <th class="px-3 py-2 text-left font-semibold">Discount</th>
+                  <th class="px-3 py-2 text-left font-semibold">Max Uses</th>
+                  <th class="px-3 py-2 text-left font-semibold">Used</th>
+                  <th class="px-3 py-2 text-left font-semibold">Status</th>
+                  <th class="px-3 py-2 text-center font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody
+                id="coupons-tbody"
+                class="divide-y divide-gray-200 dark:divide-gray-700"
+              ></tbody>
+            </table>
+          </div>
+
+          <p
+            id="coupons-empty"
+            class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden"
+          >
+            No coupons yet. Add a new coupon above.
+          </p>
+        </div>
+      </section>
+
+      <!-- ANALYTICS TAB -->
+      <section id="analytics-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md p-5 space-y-4">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-chart-column text-indigo-500"></i>
+                Platform Analytics
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Shows counts of active users, listings and rentals (from the data
+                stored in the system).
+              </p>
+            </div>
+          </div>
+
+          <!-- Summary cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div
+              class="card rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-col gap-1"
+            >
+              <span class="text-gray-500 dark:text-gray-400 text-[11px]"
+                >Active Users</span
+              >
+              <span id="analytics-active-users" class="text-2xl font-bold text-main"
+                >0</span
+              >
+              <span class="text-[11px] text-gray-400 dark:text-gray-400"
+                >Across Students, General Users, Wholesalers.</span
+              >
+            </div>
+            <div
+              class="card rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-col gap-1"
+            >
+              <span class="text-gray-500 dark:text-gray-400 text-[11px]"
+                >Total Listings</span
+              >
+              <span id="analytics-total-listings" class="text-2xl font-bold text-main"
+                >0</span
+              >
+              <span class="text-[11px] text-gray-400 dark:text-gray-400"
+                >Sell / Rent / Exchange / Donate.</span
+              >
+            </div>
+            <div
+              class="card rounded-xl border border-gray-100 dark:border-gray-700 p-4 flex flex-col gap-1"
+            >
+              <span class="text-gray-500 dark:text-gray-400 text-[11px]"
+                >Rental Volume</span
+              >
+              <span id="analytics-total-rentals" class="text-2xl font-bold text-main"
+                >0</span
+              >
+              <span class="text-[11px] text-gray-400 dark:text-gray-400"
+                >Number of rental records.</span
+              >
+            </div>
+          </div>
+
+          <!-- Simple bar chart style (pure CSS / divs) -->
+          <div class="mt-4">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              Listing type distribution (based on current listings).
+            </p>
+            <div
+              id="analytics-chart"
+              class="card rounded-xl border border-gray-100 dark:border-gray-700 p-4"
+            >
+              <div class="flex items-end gap-3 h-40">
+                <!-- Bars inserted by JS -->
+              </div>
+              <div class="flex justify-between text-[10px] uppercase mt-3">
+                <span>Sell</span>
+                <span>Rent</span>
+                <span>Exchange</span>
+                <span>Donate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISPUTES TAB -->
+      <section id="disputes-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md p-5">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4"
+          >
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-scale-balanced text-rose-500"></i>
+                Dispute Resolution
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Handle complaints related to transactions, rentals or book
+                condition and mark them as in-review / resolved.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-3 text-xs" id="disputes-container"></div>
+
+          <p
+            id="disputes-empty"
+            class="text-xs text-gray-500 dark:text-gray-400 mt-3 hidden"
+          >
+            No disputes available.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ===== STORAGE KEYS =====
+    const USERS_KEY = "libro_all_users";          // students / general / wholesalers
+    const LISTINGS_KEY = "libro_all_listings";   // all book listings
+    const ADMIN_RENTALS_KEY = "libro_admin_rentals";
+    const COUPONS_KEY = "libro_admin_coupons";
+    const DISPUTES_KEY = "libro_admin_disputes";
+
+    // ===== THEME =====
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById("theme-toggle");
+    const sunIcon = document.getElementById("sun-icon");
+    const moonIcon = document.getElementById("moon-icon");
+
+    function initTheme() {
+      const stored = localStorage.getItem("theme");
+      if (
+        stored === "dark" ||
+        (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        htmlElement.classList.add("dark");
+        sunIcon.classList.add("hidden");
+        moonIcon.classList.remove("hidden");
+      } else {
+        htmlElement.classList.remove("dark");
+        sunIcon.classList.remove("hidden");
+        moonIcon.classList.add("hidden");
+      }
+    }
+
+    initTheme();
+
+    themeToggle.addEventListener("click", () => {
+      if (htmlElement.classList.contains("dark")) {
+        htmlElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        sunIcon.classList.remove("hidden");
+        moonIcon.classList.add("hidden");
+      } else {
+        htmlElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        sunIcon.classList.add("hidden");
+        moonIcon.classList.remove("hidden");
+      }
+    });
+
+    // ===== HELPERS =====
+    const getJSON = (key, fallback) => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      try { return JSON.parse(raw); } catch { return fallback; }
+    };
+
+    const setJSON = (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    // ===== TABS =====
+    document.querySelectorAll(".tab-button").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const b = e.currentTarget;
+        const tab = b.dataset.tab;
+
+        document.querySelectorAll(".tab-button").forEach((bb) => {
+          bb.classList.remove("active", "text-indigo-600", "border-indigo-500");
+          bb.classList.add(
+            "text-gray-500",
+            "hover:text-gray-700",
+            "hover:border-gray-300",
+            "dark:text-gray-400",
+            "dark:hover:text-gray-200",
+            "dark:hover:border-gray-500"
+          );
+        });
+        b.classList.add("active", "text-indigo-600", "border-indigo-500");
+        b.classList.remove("text-gray-500", "hover:text-gray-700", "hover:border-gray-300");
+
+        document.querySelectorAll(".tab-content").forEach((c) => {
+          c.classList.add("hidden", "opacity-0");
+        });
+        const content = document.getElementById(`${tab}-tab`);
+        content.classList.remove("hidden");
+        setTimeout(() => content.classList.remove("opacity-0"), 40);
+
+        if (tab === "users") renderUsers();
+        if (tab === "listings") renderListings();
+        if (tab === "rentals") renderRentals();
+        if (tab === "coupons") renderCoupons();
+        if (tab === "analytics") renderAnalytics();
+        if (tab === "disputes") renderDisputes();
+      });
+    });
+
+    // ===== USERS TAB =====
+    const usersTbody = document.getElementById("users-tbody");
+    const usersEmpty = document.getElementById("users-empty");
+    const userRoleFilter = document.getElementById("user-role-filter");
+    const userStatusFilter = document.getElementById("user-status-filter");
+
+    userRoleFilter.addEventListener("change", renderUsers);
+    userStatusFilter.addEventListener("change", renderUsers);
+
+    function renderUsers() {
+      const users = getJSON(USERS_KEY, []);   // expected from backend / other pages
+      let filtered = [...users];
+
+      const rf = userRoleFilter.value;
+      const sf = userStatusFilter.value;
+
+      if (rf) filtered = filtered.filter((u) => u.role === rf);
+      if (sf) filtered = filtered.filter((u) => u.status === sf);
+
+      usersTbody.innerHTML = "";
+      if (!filtered.length) {
+        usersEmpty.classList.remove("hidden");
+        return;
+      }
+      usersEmpty.classList.add("hidden");
+
+      filtered.forEach((u) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/60";
+
+        const statusColour =
+          u.status === "approved"
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+            : u.status === "pending"
+            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100"
+            : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100";
+
+        tr.innerHTML = `
+          <td class="px-3 py-2">${u.name}</td>
+          <td class="px-3 py-2">${u.email}</td>
+          <td class="px-3 py-2">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+              u.role === "Student"
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100"
+                : u.role === "General"
+                ? "bg-purple-100 text-purple-700 dark:bg-purple-700 dark:text-purple-100"
+                : "bg-indigo-100 text-indigo-700 dark:bg-indigo-700 dark:text-indigo-100"
+            }">
+              ${u.role}
+            </span>
+          </td>
+          <td class="px-3 py-2">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${statusColour}">
+              ${u.status}
+            </span>
+          </td>
+          <td class="px-3 py-2 text-center">
+            <div class="inline-flex gap-1">
+              <button class="approve-btn px-2 py-1 rounded-md text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white">
+                Approve
+              </button>
+              <button class="block-btn px-2 py-1 rounded-md text-[11px] bg-red-600 hover:bg-red-700 text-white">
+                Block
+              </button>
+            </div>
+          </td>
+        `;
+
+        const approveBtn = tr.querySelector(".approve-btn");
+        const blockBtn = tr.querySelector(".block-btn");
+
+        approveBtn.addEventListener("click", () => {
+          const all = getJSON(USERS_KEY, []);
+          const idx = all.findIndex((x) => x.id === u.id);
+          if (idx !== -1) {
+            all[idx].status = "approved";
+            setJSON(USERS_KEY, all);
+            renderUsers();
+            updateSummaryCounts();
+          }
+        });
+
+        blockBtn.addEventListener("click", () => {
+          const all = getJSON(USERS_KEY, []);
+          const idx = all.findIndex((x) => x.id === u.id);
+          if (idx !== -1) {
+            all[idx].status = "blocked";
+            setJSON(USERS_KEY, all);
+            renderUsers();
+            updateSummaryCounts();
+          }
+        });
+
+        usersTbody.appendChild(tr);
+      });
+    }
+
+    // ===== LISTINGS TAB =====
+    const listingsContainer = document.getElementById("listings-container");
+    const listingsEmpty = document.getElementById("listings-empty");
+
+    function renderListings() {
+      const allListings = getJSON(LISTINGS_KEY, []); // from other modules / backend
+      const pending = allListings.filter((l) => l.status === "pending");
+      listingsContainer.innerHTML = "";
+
+      if (!pending.length) {
+        listingsEmpty.classList.remove("hidden");
+        return;
+      }
+      listingsEmpty.classList.add("hidden");
+
+      pending.forEach((b) => {
+        const card = document.createElement("div");
+        card.className =
+          "card rounded-lg shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col text-xs";
+
+        const priceTag =
+          b.listing_type === "sell"
+            ? `<span class="font-bold text-sm text-emerald-600 dark:text-emerald-400">₹${b.price}</span>`
+            : b.listing_type === "rent"
+            ? `<span class="font-bold text-sm text-blue-600 dark:text-blue-400">₹${b.price} / rent</span>`
+            : `<span class="font-bold text-sm text-indigo-600 dark:text-indigo-400">${b.listing_type?.toUpperCase()}</span>`;
+
+        const roleLabel = b.role || "User";
+
+        card.innerHTML = `
+          <div class="h-28 w-full bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/40 dark:to-blue-900/30 flex items-center justify-center text-gray-300 text-4xl">
+            <i class="fa-solid fa-book-open-reader"></i>
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <h3 class="text-sm font-semibold text-main line-clamp-2">${b.title}</h3>
+            <p class="text-[11px] text-gray-500 dark:text-gray-400">${b.author || ""}</p>
+            <p class="text-[11px] text-gray-400 mt-1">
+              Subject: ${b.subject || "N/A"} • Edition: ${b.edition || "--"}
+            </p>
+            <p class="text-[11px] text-gray-400 mt-1">
+              Condition: ${b.condition || "N/A"}
+            </p>
+            <div class="flex items-center justify-between mt-2 mb-2">
+              ${priceTag}
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
+                ${roleLabel}
+              </span>
+            </div>
+            <p class="text-[10px] text-gray-400">
+              Owner: ${b.ownerName || "User"} • ${b.ownerEmail || ""}
+            </p>
+            <div class="mt-3 flex gap-2">
+              <button class="approve-listing flex-1 px-3 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[11px]">
+                Approve
+              </button>
+              <button class="reject-listing flex-1 px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold text-[11px]">
+                Reject
+              </button>
+            </div>
+          </div>
+        `;
+
+        card
+          .querySelector(".approve-listing")
+          .addEventListener("click", () => updateListingStatus(b.id, "approved"));
+        card
+          .querySelector(".reject-listing")
+          .addEventListener("click", () => updateListingStatus(b.id, "rejected"));
+
+        listingsContainer.appendChild(card);
+      });
+    }
+
+    function updateListingStatus(id, status) {
+      const all = getJSON(LISTINGS_KEY, []);
+      const idx = all.findIndex((x) => x.id === id);
+      if (idx !== -1) {
+        all[idx].status = status;
+        setJSON(LISTINGS_KEY, all);
+        renderListings();
+        updateSummaryCounts();
+      }
+    }
+
+    // ===== RENTALS TAB =====
+    const rentalsTbody = document.getElementById("rentals-tbody");
+    const rentalsEmpty = document.getElementById("rentals-empty");
+
+    function renderRentals() {
+      const rentals = getJSON(ADMIN_RENTALS_KEY, []);
+      rentalsTbody.innerHTML = "";
+
+      if (!rentals.length) {
+        rentalsEmpty.classList.remove("hidden");
+        return;
+      }
+      rentalsEmpty.classList.add("hidden");
+
+      rentals.forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/60";
+
+        const due = new Date(r.dueDate);
+        const now = new Date();
+        const diffDays = Math.floor((now - due) / (1000 * 60 * 60 * 24));
+        const isLate = diffDays > 0;
+        const lateAmount = isLate ? diffDays * (r.lateFeePerDay || 0) : 0;
+        const displayStatus =
+          r.status === "resolved"
+            ? "Resolved"
+            : isLate
+            ? `Overdue (${diffDays} days)`
+            : r.status === "active"
+            ? "Active"
+            : r.status || "Active";
+
+        tr.innerHTML = `
+          <td class="px-3 py-2">${r.title}</td>
+          <td class="px-3 py-2">${r.userEmail}</td>
+          <td class="px-3 py-2">₹${r.deposit}</td>
+          <td class="px-3 py-2">${due.toLocaleDateString()}</td>
+          <td class="px-3 py-2">${r.lateFeePerDay} / day${
+          isLate ? ` (Total: ₹${lateAmount})` : ""
+        }</td>
+          <td class="px-3 py-2">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+              r.status === "resolved"
+                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+                : isLate
+                ? "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100"
+                : "bg-blue-100 text-blue-700 dark:bg-blue-700 dark:text-blue-100"
+            }">
+              ${displayStatus}
+            </span>
+          </td>
+          <td class="px-3 py-2 text-center">
+            <button class="resolve-btn px-2 py-1 rounded-md text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white">
+              Mark Resolved
+            </button>
+          </td>
+        `;
+
+        tr.querySelector(".resolve-btn").addEventListener("click", () => {
+          const all = getJSON(ADMIN_RENTALS_KEY, []);
+          const idx = all.findIndex((x) => x.id === r.id);
+          if (idx !== -1) {
+            all[idx].status = "resolved";
+            setJSON(ADMIN_RENTALS_KEY, all);
+            renderRentals();
+            updateSummaryCounts();
+          }
+        });
+
+        rentalsTbody.appendChild(tr);
+      });
+    }
+
+    // ===== COUPONS TAB =====
+    const couponsTbody = document.getElementById("coupons-tbody");
+    const couponsEmpty = document.getElementById("coupons-empty");
+    const couponForm = document.getElementById("coupon-form");
+
+    couponForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const code = document.getElementById("coupon-code").value.trim();
+      const discount = Number(document.getElementById("coupon-discount").value || 0);
+      const maxUses = Number(document.getElementById("coupon-max-uses").value || 0);
+
+      if (!code || !discount || !maxUses) return;
+
+      const list = getJSON(COUPONS_KEY, []);
+      list.push({
+        id: Date.now(),
+        code,
+        discount,
+        maxUses,
+        used: 0,
+        status: "active",
+        role: "Student", // coupons are for students
+      });
+      setJSON(COUPONS_KEY, list);
+      couponForm.reset();
+      renderCoupons();
+    });
+
+    function renderCoupons() {
+      const list = getJSON(COUPONS_KEY, []);
+      couponsTbody.innerHTML = "";
+      if (!list.length) {
+        couponsEmpty.classList.remove("hidden");
+        return;
+      }
+      couponsEmpty.classList.add("hidden");
+
+      list.forEach((c) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-gray-800/60";
+        tr.innerHTML = `
+          <td class="px-3 py-2 font-semibold">${c.code}</td>
+          <td class="px-3 py-2">${c.discount}%</td>
+          <td class="px-3 py-2">${c.maxUses}</td>
+          <td class="px-3 py-2">${c.used}</td>
+          <td class="px-3 py-2">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+              c.status === "active"
+                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+                : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100"
+            }">
+              ${c.status}
+            </span>
+          </td>
+          <td class="px-3 py-2 text-center">
+            <button class="toggle-btn px-2 py-1 rounded-md text-[11px] ${
+              c.status === "active"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-emerald-600 hover:bg-emerald-700"
+            } text-white">
+              ${c.status === "active" ? "Revoke" : "Activate"}
+            </button>
+          </td>
+        `;
+
+        tr.querySelector(".toggle-btn").addEventListener("click", () => {
+          const all = getJSON(COUPONS_KEY, []);
+          const idx = all.findIndex((x) => x.id === c.id);
+          if (idx !== -1) {
+            all[idx].status = all[idx].status === "active" ? "revoked" : "active";
+            setJSON(COUPONS_KEY, all);
+            renderCoupons();
+          }
+        });
+
+        couponsTbody.appendChild(tr);
+      });
+    }
+
+    // ===== ANALYTICS TAB =====
+    const summaryUsers = document.getElementById("summary-users");
+    const summaryListings = document.getElementById("summary-listings");
+    const summaryRentals = document.getElementById("summary-rentals");
+
+    const analyticsActiveUsers = document.getElementById("analytics-active-users");
+    const analyticsTotalListings = document.getElementById("analytics-total-listings");
+    const analyticsTotalRentals = document.getElementById("analytics-total-rentals");
+    const analyticsChart = document
+      .getElementById("analytics-chart")
+      .querySelector(".flex.items-end");
+
+    function updateSummaryCounts() {
+      const users = getJSON(USERS_KEY, []);
+      const listings = getJSON(LISTINGS_KEY, []);
+      const rentals = getJSON(ADMIN_RENTALS_KEY, []);
+
+      const activeUsers = users.filter((u) => u.status === "approved").length;
+
+      summaryUsers.textContent = users.length;
+      summaryListings.textContent = listings.length;
+      summaryRentals.textContent = rentals.length;
+
+      analyticsActiveUsers.textContent = activeUsers;
+      analyticsTotalListings.textContent = listings.length;
+      analyticsTotalRentals.textContent = rentals.length;
+
+      // chart
+      const counts = {
+        sell: listings.filter((l) => l.listing_type === "sell").length,
+        rent: listings.filter((l) => l.listing_type === "rent").length,
+        exchange: listings.filter((l) => l.listing_type === "exchange").length,
+        donate: listings.filter((l) => l.listing_type === "donate").length,
+      };
+      const max = Math.max(1, ...Object.values(counts));
+      analyticsChart.innerHTML = "";
+
+      ["sell", "rent", "exchange", "donate"].forEach((type) => {
+        const value = counts[type];
+        const height = (value / max) * 100;
+        const bar = document.createElement("div");
+        bar.className =
+          "flex-1 flex flex-col items-center justify-end gap-1 text-[10px]";
+        bar.innerHTML = `
+          <div class="w-6 rounded-t-lg bg-gradient-to-t ${
+            type === "sell"
+              ? "from-emerald-400 to-emerald-600"
+              : type === "rent"
+              ? "from-blue-400 to-blue-600"
+              : type === "exchange"
+              ? "from-purple-400 to-purple-600"
+              : "from-indigo-400 to-indigo-600"
+          }" style="height:${height || 10}%"></div>
+          <span class="text-gray-500 dark:text-gray-300">${value}</span>
+        `;
+        analyticsChart.appendChild(bar);
+      });
+    }
+
+    function renderAnalytics() {
+      updateSummaryCounts();
+    }
+
+    // ===== DISPUTES TAB =====
+    const disputesContainer = document.getElementById("disputes-container");
+    const disputesEmpty = document.getElementById("disputes-empty");
+
+    function renderDisputes() {
+      const disputes = getJSON(DISPUTES_KEY, []);
+      disputesContainer.innerHTML = "";
+
+      if (!disputes.length) {
+        disputesEmpty.classList.remove("hidden");
+        return;
+      }
+      disputesEmpty.classList.add("hidden");
+
+      disputes.forEach((d) => {
+        const card = document.createElement("div");
+        card.className =
+          "card rounded-lg border border-gray-100 dark:border-gray-700 p-4 text-xs flex flex-col gap-1";
+
+        const statusColour =
+          d.status === "resolved"
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+            : d.status === "in-review"
+            ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100"
+            : "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100";
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="font-semibold text-main">${d.title}</h3>
+              <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                Book: <span class="font-semibold">${d.bookTitle}</span>
+              </p>
+              <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                Buyer: ${d.buyerEmail} • Seller: ${d.sellerEmail}
+              </p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColour}">
+              ${d.status.toUpperCase()}
+            </span>
+          </div>
+          <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-2">
+            ${d.notes}
+          </p>
+          <p class="text-[10px] text-gray-400 mt-1">
+            Created: ${new Date(d.createdAt).toLocaleString()}
+          </p>
+          <div class="mt-3 flex gap-2">
+            <button class="mark-review flex-1 px-3 py-1 rounded-md text-[11px] bg-yellow-600 hover:bg-yellow-700 text-white">
+              Mark In-Review
+            </button>
+            <button class="mark-resolved flex-1 px-3 py-1 rounded-md text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white">
+              Mark Resolved
+            </button>
+          </div>
+        `;
+
+        card.querySelector(".mark-review").addEventListener("click", () => {
+          const all = getJSON(DISPUTES_KEY, []);
+          const idx = all.findIndex((x) => x.id === d.id);
+          if (idx !== -1) {
+            all[idx].status = "in-review";
+            setJSON(DISPUTES_KEY, all);
+            renderDisputes();
+          }
+        });
+
+        card.querySelector(".mark-resolved").addEventListener("click", () => {
+          const all = getJSON(DISPUTES_KEY, []);
+          const idx = all.findIndex((x) => x.id === d.id);
+          if (idx !== -1) {
+            all[idx].status = "resolved";
+            setJSON(DISPUTES_KEY, all);
+            renderDisputes();
+          }
+        });
+
+        disputesContainer.appendChild(card);
+      });
+    }
+
+    // ===== CLEAR LOCAL DATA BUTTON =====
+    document.getElementById("reset-demo").addEventListener("click", () => {
+      localStorage.removeItem(USERS_KEY);
+      localStorage.removeItem(LISTINGS_KEY);
+      localStorage.removeItem(ADMIN_RENTALS_KEY);
+      localStorage.removeItem(COUPONS_KEY);
+      localStorage.removeItem(DISPUTES_KEY);
+      alert("All local admin data cleared.");
+      window.location.reload();
+    });
+
+    // ===== INITIALISE =====
+    (function init() {
+      renderUsers();
+      updateSummaryCounts();
+      // other tabs will render when clicked
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Libro Loop • Student Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap");
+    body {
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      background-color: #f3f4f6;
+      transition: background-color .3s ease-in-out;
+    }
+    .card { background-color: #fff; }
+    .input-field {
+      border-color:#d1d5db;
+      background-color:#fff;
+      color:#111827;
+    }
+    .label { color:#4b5563; }
+    .text-main { color:#111827; }
+    .tab-button { transition:all .25s; }
+    .tab-content { transition:opacity .25s ease-in-out; }
+
+    .dark body { background-color:#020617; }
+    .dark .card{
+      background-color:#020617;
+      border-color:#1f2937;
+      box-shadow:0 10px 15px -3px rgba(0,0,0,.6),0 4px 6px -2px rgba(0,0,0,.4);
+    }
+    .dark .input-field{
+      background-color:#020617;
+      border-color:#4b5563;
+      color:#e5e7eb;
+    }
+    .dark .label{ color:#e5e7eb; }
+    .dark .text-main{ color:#f9fafb; }
+  </style>
+</head>
+<body class="dark:bg-slate-950">
+<!-- NAV -->
+<nav class="card w-full shadow-lg sticky top-0 z-20 border-b border-gray-100 dark:border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+          <i class="fa-solid fa-user-graduate"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-main font-extrabold text-xl sm:text-2xl tracking-tight">
+            LIBRO LOOP
+          </span>
+          <span class="text-[11px] uppercase tracking-[0.22em] text-gray-500 dark:text-slate-300">
+            Student Dashboard
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex flex-col text-right">
+          <span class="text-[11px] text-gray-500 dark:text-slate-300">Logged in as</span>
+          <span id="header-email" class="text-xs font-semibold text-main truncate max-w-[180px]"></span>
+        </div>
+
+        <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-slate-700">
+          <svg id="sun-icon" class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor"
+               viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+               d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="moon-icon" class="w-5 h-5 text-slate-900 hidden dark:text-slate-50" fill="none"
+               stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round"
+               stroke-width="2"
+               d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+
+        <button id="logout-btn"
+                class="hidden sm:inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 text-white">
+          <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main id="app-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <section id="stu-main">
+    <!-- top -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-main">
+          Hi, <span id="stu-name" class="text-indigo-600 dark:text-indigo-400">Student</span> 👋
+        </h1>
+        <p class="text-sm sm:text-base text-gray-500 dark:text-slate-400 mt-1">
+          List your books for <span class="font-semibold">sell / rent / exchange / donate</span>,
+          use AI price suggestion, and apply <span class="font-semibold">student coupons</span> while renting.
+        </p>
+      </div>
+
+      <div class="card rounded-xl border border-gray-100 dark:border-slate-800 px-4 py-3 text-xs text-gray-600 dark:text-slate-200 shadow">
+        <p class="font-semibold text-[11px] mb-1 uppercase tracking-wide">Quick Snapshot</p>
+        <div class="flex gap-4">
+          <div>
+            <div class="text-[11px] text-gray-400 dark:text-slate-400">Listings</div>
+            <div id="snap-listings" class="font-semibold text-main">0</div>
+          </div>
+          <div>
+            <div class="text-[11px] text-gray-400 dark:text-slate-400">Active Rentals</div>
+            <div id="snap-rentals" class="font-semibold text-main">0</div>
+          </div>
+          <div>
+            <div class="text-[11px] text-gray-400 dark:text-slate-400">Potential Earnings</div>
+            <div id="snap-earnings" class="font-semibold text-main">₹0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="mb-5 border-b border-gray-200 dark:border-slate-700">
+      <nav class="-mb-px flex flex-wrap gap-2 sm:space-x-6 text-sm">
+        <button data-tab="list"
+                class="tab-button active py-3 px-2 border-b-2 font-medium text-indigo-600 border-indigo-500">
+          <i class="fa-solid fa-book-medical mr-1.5"></i> List a Book
+        </button>
+        <button data-tab="my"
+                class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500">
+          <i class="fa-solid fa-list-check mr-1.5"></i> My Listings
+        </button>
+        <button data-tab="tools"
+                class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500">
+          <i class="fa-solid fa-toolbox mr-1.5"></i> Student Tools
+        </button>
+        <button data-tab="profile"
+                class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500">
+          <i class="fa-solid fa-user-gear mr-1.5"></i> Profile
+        </button>
+      </nav>
+    </div>
+
+    <!-- TAB: List Book -->
+    <section id="list-tab" class="tab-content">
+      <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+              <i class="fa-solid fa-book-medical text-indigo-500"></i>
+              List a Book
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+              From PPT: Student can <b>sell, rent, exchange, or donate</b> with title, author,
+              edition, condition, and price. AI suggests fair prices.
+            </p>
+          </div>
+          <p class="text-[11px] text-gray-400 dark:text-slate-500">
+            All new listings are <span class="font-semibold">Pending</span> until Admin approves.
+          </p>
+        </div>
+
+        <form id="list-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div class="space-y-3">
+            <div>
+              <label class="label text-xs">Title *</label>
+              <input id="title" required
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="Data Structures with C"/>
+            </div>
+            <div>
+              <label class="label text-xs">Author *</label>
+              <input id="author" required
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="Schaum / Pearson"/>
+            </div>
+            <div>
+              <label class="label text-xs">Edition / Year</label>
+              <input id="edition"
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="3rd / 2023"/>
+            </div>
+            <div>
+              <label class="label text-xs">Subject / Category *</label>
+              <input id="subject" required
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="CSE • DBMS • Maths..."/>
+            </div>
+            <div>
+              <label class="label text-xs">Condition</label>
+              <select id="condition"
+                      class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="new">New</option>
+                <option value="like-new" selected>Like New</option>
+                <option value="good">Good</option>
+                <option value="fair">Fair</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="label text-xs">Listing Type *</label>
+              <select id="listing_type" class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="sell" selected>Sell</option>
+                <option value="rent">Rent</option>
+                <option value="exchange">Exchange</option>
+                <option value="donate">Donate</option>
+              </select>
+            </div>
+
+            <div id="price-row">
+              <label class="label text-xs flex items-center justify-between">
+                <span>Price (₹) *</span>
+                <button type="button" id="ai-price-btn"
+                        class="ml-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-50 text-[10px] text-indigo-700 border border-indigo-200 hover:bg-indigo-100">
+                  <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i> AI Suggest
+                </button>
+              </label>
+              <input id="price" type="number" min="0"
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="200"/>
+            </div>
+
+            <div id="deposit-row" class="hidden">
+              <label class="label text-xs">Refundable Deposit (₹)</label>
+              <input id="deposit" type="number" min="0"
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="100"/>
+            </div>
+
+            <div>
+              <label class="label text-xs">Short Description (optional)</label>
+              <textarea id="description" rows="3"
+                        class="input-field mt-1 w-full rounded-lg px-3 py-2 border resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Highlights, notes, which semester, etc."></textarea>
+            </div>
+
+            <p class="text-[11px] text-gray-500 dark:text-slate-400">
+              <i class="fa-solid fa-circle-info mr-1"></i>
+              Rental-related data (deposit, late fee) is handled in the Student Tools tab.
+            </p>
+          </div>
+
+          <div class="md:col-span-2">
+            <button id="list-submit" type="submit"
+                    class="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 text-sm shadow-md">
+              <i class="fa-solid fa-circle-plus text-xs"></i> Publish Listing
+            </button>
+            <p id="list-message"
+               class="mt-3 text-xs text-center hidden px-3 py-2 rounded-lg"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB: My Listings -->
+    <section id="my-tab" class="tab-content hidden opacity-0">
+      <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-indigo-500"></i>
+              My Listings
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+              Search, filter and see approval status of your books.
+            </p>
+          </div>
+          <input id="my-search"
+                 class="input-field w-full sm:w-64 rounded-lg px-3 py-2 border text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 placeholder="Search by title / subject..."/>
+        </div>
+
+        <div id="my-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm"></div>
+        <p id="my-empty"
+           class="text-xs text-gray-500 dark:text-slate-400 mt-3 hidden">
+          You haven't listed any books yet.
+        </p>
+      </div>
+    </section>
+
+    <!-- TAB: Student Tools -->
+    <section id="tools-tab" class="tab-content hidden opacity-0">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Coupon helper -->
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 text-sm space-y-3">
+          <h3 class="text-main font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-ticket text-indigo-500"></i>
+            Student Coupon Helper
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-slate-400">
+            From PPT: students can receive and apply exclusive coupons.  
+            This widget shows how discounts are calculated.
+          </p>
+          <div class="space-y-2">
+            <div>
+              <label class="label text-xs">Original Price (₹)</label>
+              <input id="coupon-price" type="number" min="0"
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="300"/>
+            </div>
+            <div>
+              <label class="label text-xs">Coupon Code</label>
+              <input id="coupon-code"
+                     class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                     placeholder="STUDENT10 / FEST20"/>
+            </div>
+            <button id="apply-coupon"
+                    class="mt-1 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-calculator text-[11px]"></i> Apply Coupon
+            </button>
+            <p id="coupon-result" class="text-xs text-indigo-600 dark:text-indigo-300 mt-1"></p>
+          </div>
+        </div>
+
+        <!-- Rental late fee calculator -->
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 text-sm space-y-3">
+          <h3 class="text-main font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-emerald-500"></i>
+            Rental Late Fee Calculator
+          </h3>
+          <p class="text-xs text-gray-500 dark:text-slate-400">
+            From PPT: manage deposits, reminders, and late fees.
+            Here we demonstrate late fee logic on the frontend.
+          </p>
+          <div class="space-y-2">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label text-xs">Deposit (₹)</label>
+                <input id="rent-deposit" type="number" min="0"
+                       class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="200"/>
+              </div>
+              <div>
+                <label class="label text-xs">Late Fee / Day (₹)</label>
+                <input id="rent-fee-day" type="number" min="0"
+                       class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="10"/>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label text-xs">Due in (days)</label>
+                <input id="rent-due-days" type="number" min="0"
+                       class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="15"/>
+              </div>
+              <div>
+                <label class="label text-xs">Returned after (days)</label>
+                <input id="rent-return-days" type="number" min="0"
+                       class="input-field mt-1 w-full rounded-lg px-3 py-2 border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       placeholder="20"/>
+              </div>
+            </div>
+            <button id="rent-calc"
+                    class="mt-1 w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-[11px]"></i> Calculate Late Fee
+            </button>
+            <p id="rent-result" class="text-xs text-emerald-600 dark:text-emerald-300 mt-1"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: Profile -->
+    <section id="profile-tab" class="tab-content hidden opacity-0">
+      <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-4 text-sm">
+        <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-indigo-500"></i> Student Profile
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <div class="flex">
+              <span class="label w-32 text-xs font-semibold">Name:</span>
+              <span id="profile-name" class="text-main text-xs">Student</span>
+            </div>
+            <div class="flex">
+              <span class="label w-32 text-xs font-semibold">Email:</span>
+              <span id="profile-email" class="text-main text-xs"></span>
+            </div>
+            <div class="flex">
+              <span class="label w-32 text-xs font-semibold">Role:</span>
+              <span class="text-main text-xs">Student</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <p class="text-[11px] text-gray-500 dark:text-slate-400">
+              In full system, student verification (college ID / SRN) is handled at backend.
+              Here we just display login details and demonstrate frontend behaviour.
+            </p>
+            <button id="logout-btn-mobile"
+                    class="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 text-white">
+              <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<script>
+  const USER_KEY = "currentUser";
+  const TOKEN_KEY = "authToken";
+  const LISTINGS_KEY = "libro_all_listings";
+
+  // theme
+  const htmlEl = document.documentElement;
+  const themeToggle = document.getElementById("theme-toggle");
+  const sunIcon = document.getElementById("sun-icon");
+  const moonIcon = document.getElementById("moon-icon");
+
+  function initTheme() {
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark" || (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      htmlEl.classList.add("dark");
+      sunIcon.classList.add("hidden");
+      moonIcon.classList.remove("hidden");
+    } else {
+      htmlEl.classList.remove("dark");
+      sunIcon.classList.remove("hidden");
+      moonIcon.classList.add("hidden");
+    }
+  }
+  initTheme();
+  themeToggle.addEventListener("click", () => {
+    if (htmlEl.classList.contains("dark")) {
+      htmlEl.classList.remove("dark");
+      localStorage.setItem("theme","light");
+      sunIcon.classList.remove("hidden");
+      moonIcon.classList.add("hidden");
+    } else {
+      htmlEl.classList.add("dark");
+      localStorage.setItem("theme","dark");
+      sunIcon.classList.add("hidden");
+      moonIcon.classList.remove("hidden");
+    }
+  });
+
+  // helpers
+  const getJSON = (k,f)=>{const r=localStorage.getItem(k);if(!r)return f;try{return JSON.parse(r);}catch{return f;}};
+  const setJSON = (k,v)=>localStorage.setItem(k,JSON.stringify(v));
+  const fmt = n=>"₹"+Number(n||0).toLocaleString("en-IN");
+
+  // session
+  let currentUser=null, authToken=null;
+  function ensureStudent(){
+    currentUser = JSON.parse(localStorage.getItem(USER_KEY)||"null");
+    authToken = localStorage.getItem(TOKEN_KEY);
+    if(!currentUser || !authToken || currentUser.role!=="Student"){
+      document.getElementById("app-container").innerHTML = `
+        <div class="max-w-lg mx-auto mt-16 card rounded-xl shadow-xl border border-red-100 dark:border-red-800 p-8 text-center">
+          <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">Access Denied</h1>
+          <p class="text-sm text-main mb-3">This page is only for <b>Student</b> accounts.</p>
+          <p class="text-xs text-gray-500 dark:text-slate-400">
+            Please login via <b>login.html</b> and choose Student role.
+          </p>
+        </div>`;
+      return false;
+    }
+    return true;
+  }
+  if(!ensureStudent()){}else{
+    document.getElementById("header-email").textContent=currentUser.email;
+    document.getElementById("profile-email").textContent=currentUser.email;
+    const base=currentUser.email.split("@")[0].replace(/[._]/g," ");
+    const nice=base.charAt(0).toUpperCase()+base.slice(1);
+    document.getElementById("stu-name").textContent=nice;
+    document.getElementById("profile-name").textContent=nice;
+  }
+
+  // logout
+  function logout(){
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    window.location.href="login.html";
+  }
+  const lb=document.getElementById("logout-btn");
+  const lbm=document.getElementById("logout-btn-mobile");
+  if(lb)lb.addEventListener("click",logout);
+  if(lbm)lbm.addEventListener("click",logout);
+
+  // tabs
+  document.querySelectorAll(".tab-button").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      const tab=e.currentTarget.dataset.tab;
+      document.querySelectorAll(".tab-button").forEach(b=>{
+        b.classList.remove("active","text-indigo-600","border-indigo-500");
+        b.classList.add("text-gray-500","hover:text-gray-700","hover:border-gray-300",
+          "dark:text-slate-400","dark:hover:text-slate-50","dark:hover:border-slate-500");
+      });
+      e.currentTarget.classList.add("active","text-indigo-600","border-indigo-500");
+      e.currentTarget.classList.remove("text-gray-500","hover:text-gray-700","hover:border-gray-300");
+      document.querySelectorAll(".tab-content").forEach(c=>c.classList.add("hidden","opacity-0"));
+      const content=document.getElementById(`${tab}-tab`);
+      content.classList.remove("hidden");
+      setTimeout(()=>content.classList.remove("opacity-0"),40);
+      if(tab==="my")renderMyListings();
+    });
+  });
+
+  // listing form behaviour
+  const listingTypeSel=document.getElementById("listing_type");
+  const priceRow=document.getElementById("price-row");
+  const priceInput=document.getElementById("price");
+  const depositRow=document.getElementById("deposit-row");
+
+  function updatePriceDepositVisibility(){
+    const t=listingTypeSel.value;
+    if(t==="donate" || t==="exchange"){
+      priceRow.classList.add("opacity-50");
+      priceInput.disabled=true;
+      priceInput.value="";
+      depositRow.classList.add("hidden");
+    }else if(t==="rent"){
+      priceRow.classList.remove("opacity-50");
+      priceInput.disabled=false;
+      depositRow.classList.remove("hidden");
+    }else{
+      priceRow.classList.remove("opacity-50");
+      priceInput.disabled=false;
+      depositRow.classList.add("hidden");
+    }
+  }
+  listingTypeSel.addEventListener("change",updatePriceDepositVisibility);
+  updatePriceDepositVisibility();
+
+  // AI price suggest
+  document.getElementById("ai-price-btn").addEventListener("click",()=>{
+    const subject=document.getElementById("subject").value.toLowerCase();
+    const cond=document.getElementById("condition").value;
+    let base=250;
+    if(subject.includes("gate")||subject.includes("jee")||subject.includes("upsc"))base+=150;
+    if(subject.includes("math")||subject.includes("algorithm"))base+=100;
+    if(cond==="new")base+=80;
+    if(cond==="fair")base-=40;
+    const random=Math.floor(Math.random()*60)-30;
+    const suggested=Math.max(80,base+random);
+    priceInput.value=suggested;
+    showListMessage("AI suggested price: "+fmt(suggested),"success");
+  });
+
+  // list form
+  const listForm=document.getElementById("list-form");
+  const listMsg=document.getElementById("list-message");
+  function showListMessage(text,type){
+    listMsg.textContent=text;
+    listMsg.classList.remove("hidden","bg-red-100","text-red-700","bg-green-100","text-green-700");
+    if(type==="error")listMsg.classList.add("bg-red-100","text-red-700");
+    else listMsg.classList.add("bg-green-100","text-green-700");
+  }
+
+  function getMy(){
+    const all=getJSON(LISTINGS_KEY,[]);
+    return all.filter(l=>l.ownerEmail===(currentUser?.email||"") && l.role==="Student");
+  }
+
+  listForm.addEventListener("submit",e=>{
+    e.preventDefault();
+    const title=document.getElementById("title").value.trim();
+    const author=document.getElementById("author").value.trim();
+    const edition=document.getElementById("edition").value.trim();
+    const subject=document.getElementById("subject").value.trim();
+    const condition=document.getElementById("condition").value;
+    const listing_type=listingTypeSel.value;
+    const price=Number(priceInput.value||0);
+    const deposit=Number(document.getElementById("deposit").value||0);
+    const description=document.getElementById("description").value.trim();
+
+    if(!title||!author||!subject){
+      showListMessage("Please fill all mandatory fields (*).","error");
+      return;
+    }
+    if((listing_type==="sell"||listing_type==="rent") && !price){
+      showListMessage("Price is required for Sell / Rent.","error");
+      return;
+    }
+
+    const all=getJSON(LISTINGS_KEY,[]);
+    all.push({
+      id:Date.now(),
+      title,author,edition,subject,condition,
+      listing_type,
+      quantity:1,
+      price:price||0,
+      deposit:listing_type==="rent"?deposit:0,
+      description,
+      status:"pending",
+      role:"Student",
+      ownerEmail:currentUser.email,
+      ownerName:currentUser.email.split("@")[0],
+      createdAt:new Date().toISOString()
+    });
+    setJSON(LISTINGS_KEY,all);
+    listForm.reset();
+    updatePriceDepositVisibility();
+    showListMessage("Book listed successfully and sent for admin approval.","success");
+    updateSnapshot();
+  });
+
+  // My listings
+  const myContainer=document.getElementById("my-container");
+  const myEmpty=document.getElementById("my-empty");
+  const mySearch=document.getElementById("my-search");
+
+  mySearch.addEventListener("input",renderMyListings);
+
+  function renderMyListings(){
+    const all=getMy();
+    const term=(mySearch.value||"").toLowerCase();
+    const filtered= term? all.filter(b=>
+      b.title.toLowerCase().includes(term) ||
+      (b.subject||"").toLowerCase().includes(term)
+    ):all;
+
+    myContainer.innerHTML="";
+    if(!filtered.length){
+      myEmpty.classList.remove("hidden");
+      return;
+    }
+    myEmpty.classList.add("hidden");
+
+    filtered.forEach(book=>{
+      const statusColour =
+        book.status==="approved" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100" :
+        book.status==="rejected" ? "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100" :
+        "bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100";
+
+      const priceText = book.listing_type==="donate" ? "FREE / Donate" :
+                        book.listing_type==="exchange" ? "Exchange Only" :
+                        fmt(book.price);
+
+      const card=document.createElement("div");
+      card.className="card rounded-xl border border-gray-100 dark:border-slate-800 p-4 shadow-sm flex flex-col justify-between";
+      card.innerHTML=`
+        <div>
+          <h4 class="font-semibold text-main mb-1">${book.title}</h4>
+          <p class="text-xs text-gray-500 dark:text-slate-400 mb-1">${book.author}</p>
+          <p class="text-[11px] text-gray-500 dark:text-slate-400 mb-1">
+            ${book.edition?book.edition+" • ":""}${book.subject||""}
+          </p>
+        </div>
+        <div class="mt-2 flex items-center justify-between">
+          <div class="text-xs">
+            <p class="font-semibold text-main">${priceText}</p>
+            <p class="text-[11px] text-gray-400 dark:text-slate-500 capitalize">${book.listing_type}</p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColour}">
+            ${book.status}
+          </span>
+        </div>`;
+      myContainer.appendChild(card);
+    });
+  }
+
+  // tools – coupon + late fee
+  document.getElementById("apply-coupon").addEventListener("click",()=>{
+    const price=Number(document.getElementById("coupon-price").value||0);
+    const code=(document.getElementById("coupon-code").value||"").trim().toUpperCase();
+    let off=0;
+    if(code==="STUDENT10")off=10;
+    else if(code==="FEST20")off=20;
+    else if(code==="LIBRO25")off=25;
+    const resultEl=document.getElementById("coupon-result");
+    if(!price){
+      resultEl.textContent="Enter a valid price first.";
+      return;
+    }
+    if(!off){
+      resultEl.textContent="Invalid / expired coupon. No discount applied.";
+      return;
+    }
+    const disc=Math.round(price*off/100);
+    const final=price-disc;
+    resultEl.textContent=`${off}% off → You pay ${fmt(final)} (saved ${fmt(disc)}).`;
+  });
+
+  document.getElementById("rent-calc").addEventListener("click",()=>{
+    const deposit=Number(document.getElementById("rent-deposit").value||0);
+    const feeDay=Number(document.getElementById("rent-fee-day").value||0);
+    const due=Number(document.getElementById("rent-due-days").value||0);
+    const ret=Number(document.getElementById("rent-return-days").value||0);
+    const result=document.getElementById("rent-result");
+    if(ret<=due){
+      result.textContent=`Book returned on time. Full deposit (${fmt(deposit)}) is refunded.`;
+    }else{
+      const lateDays=ret-due;
+      const lateFee=lateDays*feeDay;
+      const refund=Math.max(0,deposit-lateFee);
+      result.textContent=`Late by ${lateDays} day(s). Late fee ${fmt(lateFee)}. Refund = ${fmt(refund)}.`;
+    }
+  });
+
+  // snapshot
+  const snapListings=document.getElementById("snap-listings");
+  const snapRentals=document.getElementById("snap-rentals");
+  const snapEarnings=document.getElementById("snap-earnings");
+
+  function updateSnapshot(){
+    const mine=getMy();
+    snapListings.textContent=mine.length;
+    const potential=mine.reduce((s,b)=>s+(b.listing_type==="sell"||b.listing_type==="rent"? (b.price||0):0),0);
+    snapEarnings.textContent=fmt(potential);
+    // for presentation we just count all rent listings as "active"
+    snapRentals.textContent=mine.filter(b=>b.listing_type==="rent").length;
+  }
+  (function init(){ if(currentUser && currentUser.role==="Student") updateSnapshot(); })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Libro Loop • Wholesaler Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap");
+
+    body {
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      transition: background-color 0.3s ease-in-out;
+      background-color: #f3f4f6;
+    }
+
+    .card {
+      background-color: white;
+    }
+
+    .input-field {
+      border-color: #d1d5db;
+      background-color: white;
+      color: #1f2937;
+    }
+
+    .label {
+      color: #374151;
+    }
+
+    .text-main {
+      color: #111827;
+    }
+
+    /* dark mode */
+    .dark body {
+      background-color: #0b1120;
+    }
+
+    .dark .card {
+      background-color: #020617;
+      border-color: #1e293b;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6),
+        0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    .dark .input-field {
+      border-color: #4b5563;
+      background-color: #020617;
+      color: #e5e7eb;
+    }
+
+    .dark .label {
+      color: #e5e7eb;
+    }
+
+    .dark .text-main {
+      color: #f9fafb;
+    }
+
+    .tab-button {
+      transition: all 0.25s;
+    }
+
+    .tab-content {
+      transition: opacity 0.25s ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="dark:bg-slate-950">
+  <!-- NAVBAR -->
+  <nav class="card w-full shadow-lg sticky top-0 z-20 border-b border-gray-100 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <!-- left -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-main font-extrabold tracking-tight text-xl sm:text-2xl">
+              LIBRO LOOP
+            </span>
+            <span class="text-[11px] uppercase tracking-[0.22em] text-gray-500 dark:text-slate-300">
+              Wholesaler Dashboard
+            </span>
+          </div>
+        </div>
+
+        <!-- right -->
+        <div class="flex items-center gap-4">
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="text-[11px] text-gray-500 dark:text-slate-300">
+              Logged in as
+            </span>
+            <span id="header-email" class="text-xs font-semibold text-main truncate max-w-[180px]"></span>
+          </div>
+
+          <!-- theme toggle -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full bg-gray-200 dark:bg-slate-700"
+          >
+            <svg
+              id="sun-icon"
+              class="w-5 h-5 text-yellow-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <svg
+              id="moon-icon"
+              class="w-5 h-5 text-slate-900 hidden dark:text-slate-50"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- logout -->
+          <button
+            id="logout-btn"
+            class="hidden sm:inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 text-white"
+          >
+            <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="app-container">
+    <section id="wh-main">
+      <!-- header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-main">
+            Welcome, <span id="wh-name" class="text-indigo-600 dark:text-indigo-400">Wholesaler</span>
+          </h1>
+          <p class="text-sm sm:text-base text-gray-500 dark:text-slate-400 mt-1">
+            Add bulk listings, manage your inventory, and view sales insights. All
+            your listings go through <span class="font-semibold">Admin approval</span>
+            before customers can see them.
+          </p>
+        </div>
+
+        <div class="card rounded-xl border border-gray-100 dark:border-slate-800 px-4 py-3 text-xs text-gray-600 dark:text-slate-200 shadow">
+          <p class="font-semibold text-[11px] mb-1 uppercase tracking-wide">Quick Snapshot</p>
+          <div class="flex gap-4">
+            <div>
+              <div class="text-[11px] text-gray-400 dark:text-slate-400">SKUs</div>
+              <div id="snap-skus" class="font-semibold text-main">0</div>
+            </div>
+            <div>
+              <div class="text-[11px] text-gray-400 dark:text-slate-400">Total Stock</div>
+              <div id="snap-stock" class="font-semibold text-main">0</div>
+            </div>
+            <div>
+              <div class="text-[11px] text-gray-400 dark:text-slate-400">Potential Revenue</div>
+              <div id="snap-revenue" class="font-semibold text-main">₹0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- tabs -->
+      <div class="mb-5 border-b border-gray-200 dark:border-slate-700">
+        <nav class="-mb-px flex flex-wrap gap-2 sm:space-x-6 text-sm" aria-label="Tabs">
+          <button
+            data-tab="bulk"
+            class="tab-button active py-3 px-2 border-b-2 font-medium text-indigo-600 border-indigo-500"
+          >
+            <i class="fa-solid fa-boxes-stacked mr-1.5"></i> Bulk Listing
+          </button>
+          <button
+            data-tab="inventory"
+            class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500"
+          >
+            <i class="fa-solid fa-warehouse mr-1.5"></i> Inventory
+          </button>
+          <button
+            data-tab="analytics"
+            class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500"
+          >
+            <i class="fa-solid fa-chart-line mr-1.5"></i> Analytics
+          </button>
+          <button
+            data-tab="profile"
+            class="tab-button py-3 px-2 border-b-2 font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-slate-400 dark:hover:text-slate-50 dark:hover:border-slate-500"
+          >
+            <i class="fa-solid fa-id-card-clip mr-1.5"></i> Profile
+          </button>
+        </nav>
+      </div>
+
+      <!-- TAB: BULK LISTING -->
+      <section id="bulk-tab" class="tab-content">
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-indigo-500"></i>
+                Add Bulk Listing for Sale
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                From the PPT: wholesalers list <span class="font-semibold">bulk books, exam materials, rare content</span>
+                with quantity and price. Optional bulk discounts encourage bulk orders.
+              </p>
+            </div>
+            <p class="text-[11px] text-gray-400 dark:text-slate-500">
+              All new listings start as <span class="font-semibold">Pending</span> until Admin approves.
+            </p>
+          </div>
+
+          <form id="bulk-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <!-- left -->
+            <div class="space-y-3">
+              <div>
+                <label class="label text-xs">Title *</label>
+                <input
+                  id="title"
+                  type="text"
+                  required
+                  placeholder="GATE CSE 2025 Mega Pack"
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label class="label text-xs">Author / Publisher *</label>
+                <input
+                  id="author"
+                  type="text"
+                  required
+                  placeholder="Made Easy Publications"
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label class="label text-xs">Edition / Year</label>
+                <input
+                  id="edition"
+                  type="text"
+                  placeholder="2025 / 3rd Edition"
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label class="label text-xs">Subject / Category *</label>
+                <input
+                  id="subject"
+                  type="text"
+                  required
+                  placeholder="GATE • UPSC • Engineering Maths..."
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label class="label text-xs">Condition</label>
+                <select
+                  id="condition"
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="new" selected>Brand New</option>
+                  <option value="like-new">Like New</option>
+                  <option value="good">Good</option>
+                </select>
+              </div>
+              <div>
+                <label class="label text-xs">Specialized Content Type</label>
+                <select
+                  id="special-type"
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">-- Select (optional) --</option>
+                  <option value="exam">Competitive Exam Material</option>
+                  <option value="rare">Rare / Not Easily Available</option>
+                  <option value="academic">Academic Textbook Bundle</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- right -->
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="label text-xs">Quantity (Stock) *</label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="100"
+                    class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label class="label text-xs flex items-center justify-between">
+                    <span>Unit Price (₹) *</span>
+                    <button
+                      type="button"
+                      id="ai-price-btn"
+                      class="ml-2 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-50 text-[10px] text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                    >
+                      <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i>
+                      AI Suggest
+                    </button>
+                  </label>
+                  <input
+                    id="price"
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="499"
+                    class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="label text-xs">Bulk Discount Min Qty</label>
+                  <input
+                    id="discountMinQty"
+                    type="number"
+                    min="0"
+                    placeholder="e.g., 10"
+                    class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label class="label text-xs">Discount (%)</label>
+                  <input
+                    id="discountPercent"
+                    type="number"
+                    min="0"
+                    max="90"
+                    placeholder="e.g., 15"
+                    class="input-field mt-1 w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="label text-xs">Short Description (optional)</label>
+                <textarea
+                  id="description"
+                  rows="3"
+                  placeholder="Bundle of solved papers + theory books suitable for GATE CSE..."
+                  class="input-field mt-1 w-full rounded-lg px-3 py-2 border resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                ></textarea>
+              </div>
+
+              <p class="text-[11px] text-gray-500 dark:text-slate-400">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                In the full-stack system this form submits to backend & admin dashboard
+                (approval workflow), but here we show all wholesaler features in
+                frontend using <span class="font-semibold">localStorage</span>.
+              </p>
+            </div>
+
+            <div class="md:col-span-2">
+              <button
+                id="bulk-submit"
+                type="submit"
+                class="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 text-sm shadow-md"
+              >
+                <i class="fa-solid fa-circle-plus text-xs"></i>
+                Create Listing
+              </button>
+              <p
+                id="bulk-message"
+                class="mt-3 text-xs text-center hidden px-3 py-2 rounded-lg"
+              ></p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB: INVENTORY -->
+      <section id="inventory-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-warehouse text-indigo-500"></i>
+                Inventory Management
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                View all your book bundles, update stock, mark out-of-stock, or remove a
+                listing. Status column shows where the listing is in the
+                <span class="font-semibold">Admin approval</span> workflow.
+              </p>
+            </div>
+            <div class="flex flex-col sm:items-end gap-2 text-xs">
+              <input
+                id="inventory-search"
+                type="text"
+                placeholder="Search by title / subject..."
+                class="input-field w-full sm:w-64 rounded-lg px-3 py-2 border focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <p class="text-[10px] text-gray-400 dark:text-slate-500">
+                Type to filter your inventory instantly.
+              </p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs">
+              <thead class="bg-gray-100 dark:bg-slate-900 text-gray-600 dark:text-slate-200">
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold">Title</th>
+                  <th class="px-3 py-2 text-left font-semibold">Subject</th>
+                  <th class="px-3 py-2 text-left font-semibold">Qty</th>
+                  <th class="px-3 py-2 text-left font-semibold">Price (₹)</th>
+                  <th class="px-3 py-2 text-left font-semibold">Bulk Offer</th>
+                  <th class="px-3 py-2 text-left font-semibold">Status</th>
+                  <th class="px-3 py-2 text-center font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-tbody" class="divide-y divide-gray-200 dark:divide-slate-800">
+                <!-- rows with JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <p
+            id="inventory-empty"
+            class="text-xs text-gray-500 dark:text-slate-400 mt-3 hidden"
+          >
+            You haven't added any listings yet. Use the <span class="font-semibold">Bulk Listing</span> tab to create your first bundle.
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB: ANALYTICS -->
+      <section id="analytics-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+                <i class="fa-solid fa-chart-column text-indigo-500"></i>
+                Wholesaler Analytics & Reports
+              </h2>
+              <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                From the PPT: track <span class="font-semibold">sales volume, revenue & popular books</span>.
+                Here we show summary from your listings. In full system this will plug into real order data.
+              </p>
+            </div>
+            <button
+              id="export-csv-btn"
+              class="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800"
+            >
+              <i class="fa-solid fa-file-export text-[11px]"></i>
+              Export Inventory CSV
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="card rounded-xl border border-gray-100 dark:border-slate-800 p-4">
+              <p class="text-[11px] text-gray-500 dark:text-slate-400">Total Listings</p>
+              <p id="an-total-listings" class="text-2xl font-bold text-main mt-1">0</p>
+              <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1">
+                Number of unique bundles you currently offer.
+              </p>
+            </div>
+            <div class="card rounded-xl border border-gray-100 dark:border-slate-800 p-4">
+              <p class="text-[11px] text-gray-500 dark:text-slate-400">Total Stock</p>
+              <p id="an-total-stock" class="text-2xl font-bold text-main mt-1">0</p>
+              <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1">
+                Sum of quantities across all approved & pending bundles.
+              </p>
+            </div>
+            <div class="card rounded-xl border border-gray-100 dark:border-slate-800 p-4">
+              <p class="text-[11px] text-gray-500 dark:text-slate-400">Potential Revenue</p>
+              <p id="an-total-revenue" class="text-2xl font-bold text-main mt-1">₹0</p>
+              <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1">
+                Quantity × Unit Price (ignoring discounts, just frontend estimate).
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">
+              Popular subjects (based on how many SKUs each subject has).
+            </p>
+            <div
+              id="an-chart"
+              class="card rounded-xl border border-gray-100 dark:border-slate-800 p-4"
+            >
+              <div class="flex items-end gap-3 h-40" id="an-chart-bars">
+                <!-- bars via JS -->
+              </div>
+              <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-3">
+                For viva: “This is a simple bar chart made only with HTML/CSS & JS,
+                representing analytics. In real implementation I’ll map it to orders table.”
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: PROFILE -->
+      <section id="profile-tab" class="tab-content hidden opacity-0">
+        <div class="card rounded-xl shadow-md border border-gray-100 dark:border-slate-800 p-5 space-y-4">
+          <h2 class="text-lg font-semibold text-main flex items-center gap-2">
+            <i class="fa-solid fa-id-card-clip text-indigo-500"></i>
+            Wholesaler Profile
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="space-y-2">
+              <div class="flex">
+                <span class="label w-32 text-xs font-semibold">Business Name:</span>
+                <span id="profile-name" class="text-main text-xs">Wholesaler</span>
+              </div>
+              <div class="flex">
+                <span class="label w-32 text-xs font-semibold">Email:</span>
+                <span id="profile-email" class="text-main text-xs"></span>
+              </div>
+              <div class="flex">
+                <span class="label w-32 text-xs font-semibold">Role:</span>
+                <span class="text-main text-xs">Wholesaler</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <p class="text-[11px] text-gray-500 dark:text-slate-400">
+                In full system this profile is linked with business KYC/verification
+                (PPT: “business credentials or ID verification”). In frontend demo we just
+                derive basic info from login.
+              </p>
+              <button
+                id="logout-btn-mobile"
+                class="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 text-white"
+              >
+                <i class="fa-solid fa-arrow-right-from-bracket text-[11px]"></i>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    // ===== KEYS =====
+    const USER_KEY = "currentUser";
+    const TOKEN_KEY = "authToken";
+    const LISTINGS_KEY = "libro_all_listings";
+
+    // ===== THEME =====
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById("theme-toggle");
+    const sunIcon = document.getElementById("sun-icon");
+    const moonIcon = document.getElementById("moon-icon");
+
+    function initTheme() {
+      const stored = localStorage.getItem("theme");
+      if (
+        stored === "dark" ||
+        (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        htmlElement.classList.add("dark");
+        sunIcon.classList.add("hidden");
+        moonIcon.classList.remove("hidden");
+      } else {
+        htmlElement.classList.remove("dark");
+        sunIcon.classList.remove("hidden");
+        moonIcon.classList.add("hidden");
+      }
+    }
+    initTheme();
+
+    themeToggle.addEventListener("click", () => {
+      if (htmlElement.classList.contains("dark")) {
+        htmlElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        sunIcon.classList.remove("hidden");
+        moonIcon.classList.add("hidden");
+      } else {
+        htmlElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        sunIcon.classList.add("hidden");
+        moonIcon.classList.remove("hidden");
+      }
+    });
+
+    // ===== HELPERS =====
+    const getJSON = (key, fallback) => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      try { return JSON.parse(raw); } catch { return fallback; }
+    };
+
+    const setJSON = (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    function formatCurrency(amount) {
+      const n = Number(amount || 0);
+      return "₹" + n.toLocaleString("en-IN");
+    }
+
+    // ===== SESSION CHECK =====
+    let currentUser = null;
+    let authToken = null;
+
+    function enforceWholesaler() {
+      currentUser = JSON.parse(localStorage.getItem(USER_KEY) || "null");
+      authToken = localStorage.getItem(TOKEN_KEY);
+
+      if (!currentUser || !authToken || currentUser.role !== "Wholesaler") {
+        document.getElementById("app-container").innerHTML = `
+          <div class="max-w-lg mx-auto mt-16 card rounded-xl shadow-xl border border-red-100 dark:border-red-800 p-8 text-center">
+            <h1 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
+              Access Denied
+            </h1>
+            <p class="text-sm text-main mb-3">
+              This page is only for users with the <span class="font-semibold">Wholesaler</span> role.
+            </p>
+            <p class="text-xs text-gray-500 dark:text-slate-400">
+              Please login again from <span class="font-semibold">login.html</span> as a Wholesaler
+              or contact Admin to update your account.
+            </p>
+          </div>
+        `;
+        return false;
+      }
+      return true;
+    }
+
+    if (!enforceWholesaler()) {
+      // stop rest of JS
+    } else {
+      document.getElementById("header-email").textContent = currentUser.email;
+      document.getElementById("profile-email").textContent = currentUser.email;
+      const baseName = currentUser.email.split("@")[0].replace(/[._]/g, " ");
+      const niceName = baseName.charAt(0).toUpperCase() + baseName.slice(1);
+      document.getElementById("wh-name").textContent = niceName;
+      document.getElementById("profile-name").textContent = niceName;
+    }
+
+    // ===== LOGOUT =====
+    function logout() {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      window.location.href = "login.html";
+    }
+    const logoutBtn = document.getElementById("logout-btn");
+    const logoutBtnMobile = document.getElementById("logout-btn-mobile");
+    if (logoutBtn) logoutBtn.addEventListener("click", logout);
+    if (logoutBtnMobile) logoutBtnMobile.addEventListener("click", logout);
+
+    // ===== TABS =====
+    document.querySelectorAll(".tab-button").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const b = e.currentTarget;
+        const tab = b.dataset.tab;
+
+        document.querySelectorAll(".tab-button").forEach((bb) => {
+          bb.classList.remove("active", "text-indigo-600", "border-indigo-500");
+          bb.classList.add(
+            "text-gray-500",
+            "hover:text-gray-700",
+            "hover:border-gray-300",
+            "dark:text-slate-400",
+            "dark:hover:text-slate-50",
+            "dark:hover:border-slate-500"
+          );
+        });
+        b.classList.add("active", "text-indigo-600", "border-indigo-500");
+        b.classList.remove("text-gray-500", "hover:text-gray-700", "hover:border-gray-300");
+
+        document.querySelectorAll(".tab-content").forEach((c) => {
+          c.classList.add("hidden", "opacity-0");
+        });
+        const content = document.getElementById(`${tab}-tab`);
+        content.classList.remove("hidden");
+        setTimeout(() => content.classList.remove("opacity-0"), 40);
+
+        if (tab === "inventory") renderInventory();
+        if (tab === "analytics") renderAnalytics();
+      });
+    });
+
+    // ===== BULK LISTING FORM =====
+    const bulkForm = document.getElementById("bulk-form");
+    const bulkBtn = document.getElementById("bulk-submit");
+    const bulkMsg = document.getElementById("bulk-message");
+    const aiPriceBtn = document.getElementById("ai-price-btn");
+
+    function showBulkMessage(text, type) {
+      bulkMsg.textContent = text;
+      bulkMsg.classList.remove("hidden");
+      bulkMsg.classList.remove(
+        "bg-red-100",
+        "text-red-700",
+        "bg-green-100",
+        "text-green-700"
+      );
+      if (type === "error") {
+        bulkMsg.classList.add("bg-red-100", "text-red-700");
+      } else {
+        bulkMsg.classList.add("bg-green-100", "text-green-700");
+      }
+    }
+
+    // Simple AI-like price suggestion for wholesalers
+    aiPriceBtn.addEventListener("click", () => {
+      const qty = Number(document.getElementById("quantity").value || 0);
+      const subject = document.getElementById("subject").value.toLowerCase();
+      let base = 300;
+
+      if (subject.includes("gate") || subject.includes("upsc")) base += 150;
+      if (subject.includes("engineering") || subject.includes("math")) base += 100;
+
+      if (qty >= 100) base -= 60;
+      else if (qty >= 50) base -= 40;
+      else if (qty >= 20) base -= 20;
+
+      const randomFactor = Math.floor(Math.random() * 80) - 40; // -40 to +40
+      const suggested = Math.max(100, base + randomFactor);
+      document.getElementById("price").value = suggested;
+      showBulkMessage("AI suggested unit price: ₹" + suggested, "success");
+    });
+
+    bulkForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!currentUser || currentUser.role !== "Wholesaler") {
+        showBulkMessage("You must be logged in as Wholesaler.", "error");
+        return;
+      }
+
+      const title = document.getElementById("title").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const edition = document.getElementById("edition").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const condition = document.getElementById("condition").value;
+      const specialType = document.getElementById("special-type").value;
+      const quantity = Number(document.getElementById("quantity").value || 0);
+      const price = Number(document.getElementById("price").value || 0);
+      const discountMinQty = Number(
+        document.getElementById("discountMinQty").value || 0
+      );
+      const discountPercent = Number(
+        document.getElementById("discountPercent").value || 0
+      );
+      const description = document.getElementById("description").value.trim();
+
+      if (!title || !author || !subject || !quantity || !price) {
+        showBulkMessage("Please fill all required fields (*).", "error");
+        return;
+      }
+
+      if (discountPercent && !discountMinQty) {
+        showBulkMessage(
+          "Enter minimum quantity for bulk discount or clear the discount field.",
+          "error"
+        );
+        return;
+      }
+
+      const allListings = getJSON(LISTINGS_KEY, []);
+      const newListing = {
+        id: Date.now(),
+        title,
+        author,
+        edition,
+        subject,
+        condition,
+        listing_type: "sell",
+        quantity,
+        price,
+        discountMinQty: discountMinQty || 0,
+        discountPercent: discountPercent || 0,
+        description,
+        specialType,
+        status: "pending",
+        role: "Wholesaler",
+        ownerEmail: currentUser.email,
+        ownerName: currentUser.email.split("@")[0],
+        createdAt: new Date().toISOString(),
+      };
+
+      allListings.push(newListing);
+      setJSON(LISTINGS_KEY, allListings);
+
+      bulkForm.reset();
+      showBulkMessage("Bulk listing created and sent for admin approval.", "success");
+      updateSnapshot();
+    });
+
+    // ===== INVENTORY TAB =====
+    const inventoryTbody = document.getElementById("inventory-tbody");
+    const inventoryEmpty = document.getElementById("inventory-empty");
+    const inventorySearch = document.getElementById("inventory-search");
+
+    inventorySearch.addEventListener("input", () => renderInventory());
+
+    function getMyListings() {
+      const all = getJSON(LISTINGS_KEY, []);
+      return all.filter(
+        (l) => l.ownerEmail === (currentUser?.email || "") && l.role === "Wholesaler"
+      );
+    }
+
+    function renderInventory() {
+      const mine = getMyListings();
+      const term = (inventorySearch.value || "").toLowerCase();
+
+      let filtered = mine;
+      if (term) {
+        filtered = mine.filter(
+          (item) =>
+            item.title.toLowerCase().includes(term) ||
+            (item.subject || "").toLowerCase().includes(term)
+        );
+      }
+
+      inventoryTbody.innerHTML = "";
+
+      if (!filtered.length) {
+        inventoryEmpty.classList.remove("hidden");
+        return;
+      }
+      inventoryEmpty.classList.add("hidden");
+
+      filtered.forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50 dark:hover:bg-slate-900/60";
+
+        const statusColour =
+          item.status === "approved"
+            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+            : item.status === "rejected"
+            ? "bg-red-100 text-red-700 dark:bg-red-700 dark:text-red-100"
+            : item.status === "out-of-stock"
+            ? "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-100"
+            : "bg-yellow-100 text-yellow-700 dark:bg-yellow-700 dark:text-yellow-100";
+
+        const bulkText =
+          item.discountPercent && item.discountMinQty
+            ? `${item.discountPercent}% for ≥ ${item.discountMinQty}`
+            : "-";
+
+        tr.innerHTML = `
+          <td class="px-3 py-2">${item.title}</td>
+          <td class="px-3 py-2">${item.subject || "-"}</td>
+          <td class="px-3 py-2">
+            <input type="number" min="0" value="${item.quantity}"
+              class="qty-input w-16 text-xs rounded border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2 py-1" />
+          </td>
+          <td class="px-3 py-2">${item.price}</td>
+          <td class="px-3 py-2">${bulkText}</td>
+          <td class="px-3 py-2">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${statusColour}">
+              ${item.status}
+            </span>
+          </td>
+          <td class="px-3 py-2 text-center">
+            <div class="inline-flex gap-1">
+              <button class="save-btn px-2 py-1 rounded-md text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white">
+                Save
+              </button>
+              <button class="delete-btn px-2 py-1 rounded-md text-[11px] bg-red-600 hover:bg-red-700 text-white">
+                Delete
+              </button>
+            </div>
+          </td>
+        `;
+
+        const qtyInput = tr.querySelector(".qty-input");
+        const saveBtn = tr.querySelector(".save-btn");
+        const deleteBtn = tr.querySelector(".delete-btn");
+
+        saveBtn.addEventListener("click", () => {
+          const newQty = Number(qtyInput.value || 0);
+          const arr = getJSON(LISTINGS_KEY, []);
+          const idx = arr.findIndex((x) => x.id === item.id);
+          if (idx !== -1) {
+            arr[idx].quantity = newQty;
+            if (newQty === 0) {
+              arr[idx].status = "out-of-stock";
+            }
+            setJSON(LISTINGS_KEY, arr);
+            renderInventory();
+            updateSnapshot();
+          }
+        });
+
+        deleteBtn.addEventListener("click", () => {
+          if (!confirm("Remove this listing permanently?")) return;
+          const arr = getJSON(LISTINGS_KEY, []);
+          const filteredAll = arr.filter((x) => x.id !== item.id);
+          setJSON(LISTINGS_KEY, filteredAll);
+          renderInventory();
+          updateSnapshot();
+        });
+
+        inventoryTbody.appendChild(tr);
+      });
+    }
+
+    // ===== ANALYTICS =====
+    const anListings = document.getElementById("an-total-listings");
+    const anStock = document.getElementById("an-total-stock");
+    const anRevenue = document.getElementById("an-total-revenue");
+    const anChartBars = document.getElementById("an-chart-bars");
+    const exportCsvBtn = document.getElementById("export-csv-btn");
+
+    function renderAnalytics() {
+      const mine = getMyListings();
+
+      const totalListings = mine.length;
+      const totalStock = mine.reduce((sum, item) => sum + (item.quantity || 0), 0);
+      const totalRevenue = mine.reduce(
+        (sum, item) => sum + (item.quantity || 0) * (item.price || 0),
+        0
+      );
+
+      anListings.textContent = totalListings;
+      anStock.textContent = totalStock;
+      anRevenue.textContent = formatCurrency(totalRevenue);
+
+      // subject counts
+      const bySubject = {};
+      mine.forEach((item) => {
+        const key = (item.subject || "Other").trim() || "Other";
+        bySubject[key] = (bySubject[key] || 0) + 1;
+      });
+
+      const entries = Object.entries(bySubject);
+      anChartBars.innerHTML = "";
+      if (!entries.length) {
+        anChartBars.innerHTML =
+          '<p class="text-xs text-gray-500 dark:text-slate-400">No data yet. Add some listings to see subject distribution.</p>';
+        return;
+      }
+
+      const max = Math.max(...entries.map(([, count]) => count));
+      entries.slice(0, 4).forEach(([subject, count]) => {
+        const height = (count / max) * 100;
+        const bar = document.createElement("div");
+        bar.className = "flex-1 flex flex-col items-center justify-end gap-1 text-[10px]";
+        bar.innerHTML = `
+          <div class="w-7 rounded-t-lg bg-gradient-to-t from-indigo-400 to-indigo-600" style="height:${height || 10}%"></div>
+          <span class="text-slate-500 dark:text-slate-200">${count}</span>
+          <span class="text-[9px] text-center text-slate-500 dark:text-slate-300 truncate w-14" title="${subject}">
+            ${subject}
+          </span>
+        `;
+        anChartBars.appendChild(bar);
+      });
+    }
+
+    // Export inventory as CSV report
+    exportCsvBtn.addEventListener("click", () => {
+      const mine = getMyListings();
+      if (!mine.length) {
+        alert("No listings to export.");
+        return;
+      }
+
+      const header = [
+        "Title",
+        "Author",
+        "Subject",
+        "Edition",
+        "Quantity",
+        "Price",
+        "DiscountMinQty",
+        "DiscountPercent",
+        "Status",
+        "CreatedAt"
+      ];
+
+      const rows = mine.map((item) => [
+        item.title,
+        item.author,
+        item.subject || "",
+        item.edition || "",
+        item.quantity,
+        item.price,
+        item.discountMinQty || 0,
+        item.discountPercent || 0,
+        item.status,
+        item.createdAt
+      ]);
+
+      const csvContent = [header, ...rows]
+        .map((row) =>
+          row
+            .map((value) => `"${String(value).replace(/"/g, '""')}"`)
+            .join(",")
+        )
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "wholesaler_inventory_report.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // ===== SNAPSHOT =====
+    const snapSkus = document.getElementById("snap-skus");
+    const snapStock = document.getElementById("snap-stock");
+    const snapRevenue = document.getElementById("snap-revenue");
+
+    function updateSnapshot() {
+      const mine = getMyListings();
+      const skuCount = mine.length;
+      const stock = mine.reduce((sum, item) => sum + (item.quantity || 0), 0);
+      const revenue = mine.reduce(
+        (sum, item) => sum + (item.quantity || 0) * (item.price || 0),
+        0
+      );
+
+      snapSkus.textContent = skuCount;
+      snapStock.textContent = stock;
+      snapRevenue.textContent = formatCurrency(revenue);
+    }
+
+    // ===== INIT =====
+    (function init() {
+      if (!currentUser || currentUser.role !== "Wholesaler") return;
+      updateSnapshot();
+    })();
+  </script>
+</body>
+</html>
